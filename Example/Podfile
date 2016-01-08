@@ -1,0 +1,13 @@
+source 'https://github.com/CocoaPods/Specs.git'
+use_frameworks!
+
+target 'kuick_Kit_Example', :exclusive => true do
+  pod "kuick_Kit", :path => "../"
+end
+
+target 'kuick_Kit_Tests', :exclusive => true do
+  pod "kuick_Kit", :path => "../"
+
+  pod 'Kiwi'
+  pod 'FBSnapshotTestCase'
+end
