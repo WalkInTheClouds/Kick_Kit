@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "kuick_Kit"
-  s.version          = "0.1.1"
+  s.version          = "0.1.2"
   s.summary          = "kuick_Kit 工具包."
 
 # This description is used to generate tags and improve search results.
@@ -25,7 +25,7 @@ Pod::Spec.new do |s|
   s.source           = { :git => "https://git.oschina.net/kuick-cn/kuick-ios-libs.git", :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
-  s.platform     = :ios, '7.0'
+  s.platform     = :ios, '8.0'
   s.requires_arc = true
 
   s.source_files = 'Pod/Classes/**/*'
