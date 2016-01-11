@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "kuick_Kit"
-  s.version          = "0.1.3"
+  s.version          = "0.1.3.1"
   s.summary          = "kuick_Kit 工具包."
 
 # This description is used to generate tags and improve search results.
