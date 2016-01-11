@@ -133,4 +133,18 @@ typedef void (^I_failBlock) (NSError *error);
  *  @param tableView 需要去除的tableView
  */
 + (void)setExtraCellLineHidden: (UITableView *)tableView;
+
+/**
+ *  获取当前vc(不包含弹出vc)
+ *
+ *  @return 当前vc
+ */
++ (UIViewController *)getCurrentVC
+
+/**
+ *  获取当前弹出vc
+ *
+ *  @return 弹出的vc
+ */
++ (UIViewController *)getPresentedViewController;
 @end
