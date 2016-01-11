@@ -448,4 +448,23 @@
     }
     return topVC;
 }
+
+#pragma mark : - 获取资源辅助方法
+
++ (NSString*)getResourcePathByBundleName: (NSString *)bundleName andResouceName: (NSString *)resourceName andType:(NSString*)type{
+    NSString *pathString =[[ NSBundle   mainBundle ]. resourcePath   stringByAppendingPathComponent : @"Frameworks" ];
+    pathString = [pathString stringByAppendingPathComponent:@"KuickDeal.framework"];
+    pathString = [pathString stringByAppendingPathComponent:bundleName];
+    NSString *path =  [[NSBundle bundleWithPath:pathString] pathForResource:resourceName ofType:type];
+    return path;
+}
+
++ (UIImage*)getResourceImgByBundleName: (NSString *)bundleName andResouceName: (NSString *)resourceName{
+    NSString *pathString =[[ NSBundle   mainBundle ]. resourcePath   stringByAppendingPathComponent : @"Frameworks" ];
+    pathString = [pathString stringByAppendingPathComponent:@"KuickDeal.framework"];
+    pathString = [pathString stringByAppendingPathComponent:bundleName];
+    pathString = [pathString stringByAppendingPathComponent:resourceName];
+    UIImage *img =  [UIImage imageWithContentsOfFile:pathString];
+    return img;
+}
 @end

@@ -147,4 +147,19 @@ typedef void (^I_failBlock) (NSError *error);
  *  @return 弹出的vc
  */
 + (UIViewController *)getPresentedViewController;
+
+/**
+ *  获取Bundle内的资源
+ *
+ *  @return 资源地址
+ */
++ (NSString*)getResourcePathByBundleName: (NSString *)bundleName andResouceName: (NSString *)resourceName andType:(NSString*)type;
+
+/**
+ *  获取Bundle内的图片资源
+ *
+ *  @return 图片对象
+ */
++ (UIImage*)getResourceImgByBundleName: (NSString *)bundleName andResouceName: (NSString *)resourceName;
+
 @end
