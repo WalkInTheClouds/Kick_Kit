@@ -139,7 +139,7 @@ typedef void (^I_failBlock) (NSError *error);
  *
  *  @return 当前vc
  */
-+ (UIViewController *)getCurrentVC
++ (UIViewController *)getCurrentVC;
 
 /**
  *  获取当前弹出vc
