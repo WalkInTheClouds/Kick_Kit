@@ -18,8 +18,12 @@
 // block
 typedef void (^I_succeedBlock) (ImageInfoModel *infoModel);
 typedef void (^I_failBlock) (NSError *error);
-@interface KKHelp : NSObject
 
+
+@interface KKHelp : NSObject
+FOUNDATION_EXPORT NSString *const KKSDK_KuickLive;
+FOUNDATION_EXPORT NSString *const KKSDK_KuickCall;
+FOUNDATION_EXPORT NSString *const KKSDK_KuickDeal;
 
 ///把数组的第一个元素 移动到最后一个
 + (void)moveObjectToLastIndex:(NSMutableArray *)array;
@@ -34,8 +38,8 @@ typedef void (^I_failBlock) (NSError *error);
  * @param hight 图片长;
  */
 + (NSString *)getClipWebImageURLWithUrlString:(NSString *)urlStirng
-                                     width:(NSInteger)width
-                                     hight:(NSInteger)hight;
+                                        width:(NSInteger)width
+                                        hight:(NSInteger)hight;
 
 ///把网络上的图片某一边（宽或高）进行固定到一个长度，另外一边按照比例进行调整。
 /*
@@ -43,7 +47,7 @@ typedef void (^I_failBlock) (NSError *error);
  * @param width 图片宽;
  */
 + (NSString *)getClipWebImageURLWithUrlString:(NSString *)urlStirng
-                                     width:(NSInteger)width;
+                                        width:(NSInteger)width;
 /*
  * @param urlStirng url 地址;
  * @param success 成功地 block 返回 imageinfo model;
@@ -161,5 +165,12 @@ typedef void (^I_failBlock) (NSError *error);
  *  @return 图片对象
  */
 + (UIImage*)getResourceImgByBundleName: (NSString *)bundleName andResouceName: (NSString *)resourceName;
+
+/**
+ *  获取Bundle
+ *
+ *  @return Bundle
+ */
++ (NSBundle*)getBundleByBundleName: (NSString *)bundleName;
 
 @end

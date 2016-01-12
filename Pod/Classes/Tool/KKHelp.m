@@ -13,6 +13,10 @@
 
 @implementation KKHelp
 
+NSString *const KKSDK_KuickLive = @"KuickLive.bundle";
+NSString *const KKSDK_KuickCall = @"KuickDeal.bundle";
+NSString *const KKSDK_KuickDeal = @"KuickDeal.bundle";
+
 ///把数组的第一个元素 移动到最后一个
 + (void)moveObjectToLastIndex:(NSMutableArray *)array
 {
@@ -452,10 +456,7 @@
 #pragma mark : - 获取资源辅助方法
 
 + (NSString*)getResourcePathByBundleName: (NSString *)bundleName andResouceName: (NSString *)resourceName andType:(NSString*)type{
-    NSString *pathString =[[ NSBundle   mainBundle ]. resourcePath   stringByAppendingPathComponent : @"Frameworks" ];
-    pathString = [pathString stringByAppendingPathComponent:@"KuickDeal.framework"];
-    pathString = [pathString stringByAppendingPathComponent:bundleName];
-    NSString *path =  [[NSBundle bundleWithPath:pathString] pathForResource:resourceName ofType:type];
+    NSString *path =  [[KKHelp getBundleByBundleName:bundleName] pathForResource:resourceName ofType:type];
     return path;
 }
 
@@ -467,4 +468,14 @@
     UIImage *img =  [UIImage imageWithContentsOfFile:pathString];
     return img;
 }
+
++ (NSBundle*)getBundleByBundleName: (NSString *)bundleName{
+    NSString *pathString =[[ NSBundle   mainBundle ]. resourcePath   stringByAppendingPathComponent : @"Frameworks" ];
+    pathString = [pathString stringByAppendingPathComponent:@"KuickDeal.framework"];
+    pathString = [pathString stringByAppendingPathComponent:bundleName];
+    NSBundle *returnBundle =  [NSBundle bundleWithPath:pathString];
+    return returnBundle;
+}
+
+
 @end
