@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "kuick_Kit"
-  s.version          = "0.1.3.3"
+  s.version          = "0.1.3.4"
   s.summary          = "kuick_Kit 工具包."
 
 # This description is used to generate tags and improve search results.
@@ -18,11 +18,11 @@ Pod::Spec.new do |s|
 #   * Finally, don't worry about the indent, CocoaPods strips it!  
   s.description      = "一些杂七杂八的东西,凑活着用吧~"
 
-  s.homepage         = "https://git.oschina.net/kuick-cn/kuick-ios-libs"
+  s.homepage         = "https://github.com/WalkInTheClouds/kuick_Kit"
   # s.screenshots     = "www.example.com/screenshots_1", "www.example.com/screenshots_2"
   s.license          = 'MIT'
   s.author           = { "WalkInTheClouds" => "791290087@qq.com" }
-  s.source           = { :git => "https://git.oschina.net/kuick-cn/kuick-ios-libs.git", :tag => s.version.to_s }
+  s.source           = { :git => "https://github.com/WalkInTheClouds/kuick_Kit.git", :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.platform     = :ios, '8.0'
