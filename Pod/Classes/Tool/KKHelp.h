@@ -15,6 +15,7 @@
 
 #import <Foundation/Foundation.h>
 #import "ImageInfoModel.h"
+
 // block
 typedef void (^I_succeedBlock) (ImageInfoModel *infoModel);
 typedef void (^I_failBlock) (NSError *error);
@@ -151,7 +152,12 @@ FOUNDATION_EXPORT NSString *const KKSDK_KuickDeal;
  *  @return 弹出的vc
  */
 + (UIViewController *)getPresentedViewController;
-
+/**
+ *  获取topvc
+ *
+ *  @return 顶层的vc
+ */
++ (UIViewController *)getTopViewController;
 /**
  *  获取Bundle内的资源
  *
@@ -172,5 +178,48 @@ FOUNDATION_EXPORT NSString *const KKSDK_KuickDeal;
  *  @return Bundle
  */
 + (NSBundle*)getBundleByBundleName: (NSString *)bundleName;
+
+/**
+ *  获取网络状态
+ *
+ *  @return 状态说明
+ */
++ (NSString *)getCurrentNetWorkInfo;
+
+/**
+ *  移除一组文件名的后缀
+ *
+ *  @param strings 文件名数组
+ *
+ *  @return 去除文件名的数组
+ */
++ (NSArray *)removeFileSuffixesWithStrings:(NSArray *)strings;
+
+/**
+ *  移除单个文件名的后缀
+ *
+ *  @param string 文件名
+ *
+ *  @return 去除后缀的文件名
+ */
++ (NSString *)removeFileSuffixesWithString:(NSString *)string;
+
+/*
+ *  判断字符是否包含表情
+ */
++ (BOOL)stringContainsEmoji:(NSString *)string;
+
+/**
+ *  判断是否是合格的密码(6-16位,数字和字母)
+ */
++ (BOOL)isValidatePassWord:(NSString *)passWord;
+
+/**
+ *  打开系统设置-本应用
+ */
++ (void)openApplicationOpenSettings;
+
+
+
 
 @end

@@ -6,7 +6,7 @@
 //  Copyright (c) 2015年 CCKaihui. All rights reserved.
 //
 
-#import "JSONModel.h"
+#import <JSOnModel/JSONModel.h>
 
 @class valueModel;
 @interface ImageInfoModel : JSONModel

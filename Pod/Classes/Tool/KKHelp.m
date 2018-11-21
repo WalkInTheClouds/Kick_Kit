@@ -8,7 +8,7 @@
 
 #import "KKHelp.h"
 #import "AFNetworking.h"
-
+#import <CoreTelephony/CTTelephonyNetworkInfo.h>
 
 
 @implementation KKHelp
@@ -51,7 +51,11 @@ NSString *const KKSDK_KuickDeal = @"KuickDeal.bundle";
         width = width *[UIScreen mainScreen].scale;
     }
     NSString *imageType = [[urlStirng componentsSeparatedByString:@"."] lastObject];
-    NSString *string = [NSString stringWithFormat:@"%@@1e_%dw_%dh_1c_0i_1o_1x.%@",urlStirng,(int)width,(int)hight,imageType];
+    if ([imageType isEqualToString:@"JPEG"]) {
+        //修正裁剪,裁剪后缀不能 为jpeg?
+        imageType = @"jpg";
+    }
+    NSString *string = [NSString stringWithFormat:@"%@@1e_%dw_%dh_1c_0i_1o_1x",urlStirng,(int)width,(int)hight];
 //    NSURL *url =  [NSURL URLWithString:string];
 //    NSLog(@"--=========$&$@$#$**********************************-%s--%@",__FUNCTION__,urlStirng);
 //    NSLog(@"--=========$&$@$#$**********************************-%s--%@",__FUNCTION__,url);
@@ -76,6 +80,38 @@ NSString *const KKSDK_KuickDeal = @"KuickDeal.bundle";
     NSString *url = [NSString stringWithFormat:@"%@@infoexif",urlString];
     url = [url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    NSStringEncoding enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
+    manager.responseSerializer.stringEncoding =  enc;
+    [manager GET:url
+      parameters:nil
+        progress:nil
+         success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject)
+    {
+//        NSError *parseError = nil;
+//        NSData  *jsonData = [NSJSONSerialization dataWithJSONObject:responseObject options:NSJSONWritingPrettyPrinted error:&parseError];
+////        NSString * dataString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+//        if (jsonData)
+//        {
+//            //使用gbk编码
+//            NSStringEncoding enc = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
+//            NSString *dataString = [[NSString alloc]initWithData:jsonData encoding:enc];
+//            NSLog(@"-------%s---%@",__FUNCTION__,dataString);
+//            NSError *error = nil;
+//            responseObject = [NSJSONSerialization JSONObjectWithData:[dataString dataUsingEncoding:NSUTF8StringEncoding] options:NSJSONReadingMutableContainers error:&error];
+//            NSLog(@"-----%@",error);
+//        }
+        
+        
+        ImageInfoModel *model = [[ImageInfoModel alloc]initWithDictionary:responseObject error:nil];
+        success(model);
+        
+
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        failed(error);
+    }];
+    
+    /*
     [[AFHTTPRequestOperationManager manager] GET:url parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject)
     {
         if (!operation.responseString)
@@ -97,6 +133,7 @@ NSString *const KKSDK_KuickDeal = @"KuickDeal.bundle";
     {
         failed(error);
     }];
+     */
 }
 /*         
  * @param string 被计算字符串;
@@ -163,16 +200,19 @@ NSString *const KKSDK_KuickDeal = @"KuickDeal.bundle";
      27         * 号码：七位或八位
      28         */
     // NSString * PHS = @"^0(10|2[0-5789]|\\d{3})\\d{7,8}$";
+     NSString * KK = @"^1[3|4|5|6|7|8|9]\\d{9}$";
     
     NSPredicate *regextestmobile = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", MOBILE];
     NSPredicate *regextestcm = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", CM];
     NSPredicate *regextestcu = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", CU];
     NSPredicate *regextestct = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", CT];
+    NSPredicate *regextestKK = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", KK];
     
     if (([regextestmobile evaluateWithObject:mobileNum])
         || ([regextestcm evaluateWithObject:mobileNum])
         || ([regextestct evaluateWithObject:mobileNum])
-        || ([regextestcu evaluateWithObject:mobileNum]))
+        || ([regextestcu evaluateWithObject:mobileNum])
+        ||  ([regextestKK evaluateWithObject:mobileNum]))
     {
         if([regextestcm evaluateWithObject:mobileNum]) {
             NSLog(@"China Mobile");
@@ -214,6 +254,14 @@ NSString *const KKSDK_KuickDeal = @"KuickDeal.bundle";
     
     return rt;
 }
+
+#pragma mark 验证密码
++ (BOOL)isValidatePassWord:(NSString *)passWord{
+    NSString *strRegex = @"(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}";
+    BOOL rt = [self isValidateRegularExpression:passWord byExpression:strRegex];
+    return rt;
+}
+
 #pragma mark 是否是纯数字
 + (BOOL)isValidateNumber:(NSString *)string
 {
@@ -452,7 +500,15 @@ NSString *const KKSDK_KuickDeal = @"KuickDeal.bundle";
     }
     return topVC;
 }
-
+#pragma mark 获取顶层VC
++ (UIViewController *)getTopViewController
+{
+    UIViewController *currentVC = [KKHelp getPresentedViewController];
+    if (!currentVC) {
+        currentVC = [KKHelp getCurrentVC];
+    }
+    return currentVC;
+}
 #pragma mark : - 获取资源辅助方法
 
 + (NSString*)getResourcePathByBundleName: (NSString *)bundleName andResouceName: (NSString *)resourceName andType:(NSString*)type{
@@ -461,21 +517,167 @@ NSString *const KKSDK_KuickDeal = @"KuickDeal.bundle";
 }
 
 + (UIImage*)getResourceImgByBundleName: (NSString *)bundleName andResouceName: (NSString *)resourceName{
-    NSString *pathString =[[ NSBundle   mainBundle ]. resourcePath   stringByAppendingPathComponent : @"Frameworks" ];
-    pathString = [pathString stringByAppendingPathComponent:@"KuickDeal.framework"];
-    pathString = [pathString stringByAppendingPathComponent:bundleName];
+    NSString *pathString = [self getTrueBundlePathWithBundleName:bundleName];
     pathString = [pathString stringByAppendingPathComponent:resourceName];
     UIImage *img =  [UIImage imageWithContentsOfFile:pathString];
     return img;
 }
 
 + (NSBundle*)getBundleByBundleName: (NSString *)bundleName{
+    NSString *pathString = [self getTrueBundlePathWithBundleName:bundleName];
+    NSBundle *returnBundle =  [NSBundle bundleWithPath:pathString];
+
+    return returnBundle;
+}
+
++ (NSString *)getTrueBundlePathWithBundleName:(NSString *)bundleName
+{
     NSString *pathString =[[ NSBundle   mainBundle ]. resourcePath   stringByAppendingPathComponent : @"Frameworks" ];
     pathString = [pathString stringByAppendingPathComponent:@"KuickDeal.framework"];
     pathString = [pathString stringByAppendingPathComponent:bundleName];
-    NSBundle *returnBundle =  [NSBundle bundleWithPath:pathString];
-    return returnBundle;
+    NSFileManager *manger = [NSFileManager  defaultManager];
+    BOOL isDir;
+    if ([manger fileExistsAtPath:pathString isDirectory:&isDir]) {
+        return pathString;
+    }else
+    {
+        return pathString = [[NSBundle mainBundle].resourcePath stringByAppendingPathComponent:bundleName];
+    }
+    
 }
++ (NSString *)getCurrentNetWorkInfo
+{
+    BOOL isWifi = [AFNetworkReachabilityManager sharedManager].isReachableViaWiFi;
+    BOOL isWWAN = [AFNetworkReachabilityManager sharedManager].isReachableViaWWAN;
+    NSString *state = @"NULL";
+    if (isWifi) {
+        state = @"WIFI";
+    } else if (isWWAN) {
+        CTTelephonyNetworkInfo *telephonyInfo = [[CTTelephonyNetworkInfo alloc] init];
+        NSString *currentStatus = telephonyInfo.currentRadioAccessTechnology;
+        if ([currentStatus isEqualToString:@"CTRadioAccessTechnologyGPRS"]){
+            //GPRS网络
+            state = @"2G";
+        } else if ([currentStatus isEqualToString:@"CTRadioAccessTechnologyEdge"]){
+            //2.75G的EDGE网络
+            state = @"2G";
+        } else if ([currentStatus isEqualToString:@"CTRadioAccessTechnologyWCDMA"]){
+            //3G WCDMA网络
+            state = @"3G";
+        } else if ([currentStatus isEqualToString:@"CTRadioAccessTechnologyHSDPA"]){
+            //3.5G网络
+            state = @"3G";
+        } else if ([currentStatus isEqualToString:@"CTRadioAccessTechnologyHSUPA"]){
+            //3.5G网络
+            state = @"3G";
+        } else if ([currentStatus isEqualToString:@"CTRadioAccessTechnologyCDMA1x"]){
+            //CDMA2G网络
+            state = @"2G";
+        } else if ([currentStatus isEqualToString:@"CTRadioAccessTechnologyCDMAEVDORev0"]){
+            //CDMA的EVDORev0(应该算3G吧?)
+            state = @"3G";
+        } else if ([currentStatus isEqualToString:@"CTRadioAccessTechnologyCDMAEVDORevA"]){
+            //CDMA的EVDORevA(应该也算3G吧?)
+            state = @"3G";
+        } else if ([currentStatus isEqualToString:@"CTRadioAccessTechnologyCDMAEVDORevB"]){
+            //CDMA的EVDORev0(应该是算3G吧?)
+            state = @"3G";
+        } else if ([currentStatus isEqualToString:@"CTRadioAccessTechnologyeHRPD"]){
+            //HRPD网络
+            state = @"";
+        }else if ([currentStatus isEqualToString:@"CTRadioAccessTechnologyLTE"]){
+            //LTE4G网络
+            state = @"4G";
+        }
+    } else {
+        state = @"NULL";
+    }
+    return state;
+}
++ (NSArray *)removeFileSuffixesWithStrings:(NSArray *)strings{
+  
+    if (!strings || strings.count == 0) {
+        return strings;
+    }else{
+        NSMutableArray *array = [NSMutableArray array];
+        for (NSString *string in strings) {
+            NSString *newString = [self removeFileSuffixesWithString:string];
+            [array addObject:newString];
+        }
+        return array;
+    }
+    
+}
++ (NSString *)removeFileSuffixesWithString:(NSString *)string{
+    
+    if (!string) {
+        return string;
+    }
+    string =  [string stringByDeletingPathExtension];
+    return string;
+
+//    NSMutableArray *chars = [[string componentsSeparatedByString:@"."]  mutableCopy];
+//    NSString *suffix = [chars lastObject];
+//    if (suffix) {
+//        [chars removeObject:suffix];
+//         return [chars componentsJoinedByString:@"."];
+//    }else{
+//        return string;
+//    }
+}
+
+
++ (BOOL)stringContainsEmoji:(NSString *)string
+{
+    // 过滤所有表情。returnValue为NO表示不含有表情，YES表示含有表情
+    __block BOOL returnValue = NO;
+    [string enumerateSubstringsInRange:NSMakeRange(0, [string length]) options:NSStringEnumerationByComposedCharacterSequences usingBlock:^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop) {
+        
+        const unichar hs = [substring characterAtIndex:0];
+        // surrogate pair
+        if (0xd800 <= hs && hs <= 0xdbff) {
+            if (substring.length > 1) {
+                const unichar ls = [substring characterAtIndex:1];
+                const int uc = ((hs - 0xd800) * 0x400) + (ls - 0xdc00) + 0x10000;
+                if (0x1d000 <= uc && uc <= 0x1f77f) {
+                    returnValue = YES;
+                }
+            }
+        } else if (substring.length > 1) {
+            const unichar ls = [substring characterAtIndex:1];
+            if (ls == 0x20e3) {
+                returnValue = YES;
+            }
+        } else {
+            // non surrogate
+            if (0x2100 <= hs && hs <= 0x27ff) {
+                returnValue = YES;
+            } else if (0x2B05 <= hs && hs <= 0x2b07) {
+                returnValue = YES;
+            } else if (0x2934 <= hs && hs <= 0x2935) {
+                returnValue = YES;
+            } else if (0x3297 <= hs && hs <= 0x3299) {
+                returnValue = YES;
+            } else if (hs == 0xa9 || hs == 0xae || hs == 0x303d || hs == 0x3030 || hs == 0x2b55 || hs == 0x2b1c || hs == 0x2b1b || hs == 0x2b50) {
+                returnValue = YES;
+            }
+        }
+    }];
+    return returnValue;
+}
+
+#pragma mark : 打开系统设置-本应用
++ (void)openApplicationOpenSettings{
+    if (@available(iOS 8,*)){
+        NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
+        UIApplication *application = [UIApplication sharedApplication];
+        if ([application canOpenURL:url]){
+            [application openURL:url];
+        }
+    }
+}
+
+
 
 
 @end

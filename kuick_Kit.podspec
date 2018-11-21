@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "kuick_Kit"
-  s.version          = "0.1.3.4"
+  s.version          = "0.2.0"
   s.summary          = "kuick_Kit 工具包."
 
 # This description is used to generate tags and improve search results.
@@ -21,7 +21,7 @@ Pod::Spec.new do |s|
   s.homepage         = "https://github.com/WalkInTheClouds/kuick_Kit"
   # s.screenshots     = "www.example.com/screenshots_1", "www.example.com/screenshots_2"
   s.license          = 'MIT'
-  s.author           = { "WalkInTheClouds" => "791290087@qq.com" }
+  s.author           = { "laojun666" => "791290087@qq.com" }
   s.source           = { :git => "https://github.com/WalkInTheClouds/kuick_Kit.git", :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
@@ -43,7 +43,6 @@ Pod::Spec.new do |s|
     tool.source_files = '**/Pod/Classes/Tool/**/*'
     tool.public_header_files = '**/Pod/Classes/Tool/**/*.h'
     tool.dependency 'AFNetworking', '~> 2.3'
-    tool.dependency 'SDWebImage'
     tool.dependency 'JSONModel'
 
   end
