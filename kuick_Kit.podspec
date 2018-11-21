@@ -42,7 +42,7 @@ Pod::Spec.new do |s|
   s.subspec 'Tool' do |tool|
     tool.source_files = '**/Pod/Classes/Tool/**/*'
     tool.public_header_files = '**/Pod/Classes/Tool/**/*.h'
-    tool.dependency 'AFNetworking', '~> 2.3'
+    tool.dependency 'AFNetworking', '~> 3.0'
     tool.dependency 'JSONModel'
 
   end
